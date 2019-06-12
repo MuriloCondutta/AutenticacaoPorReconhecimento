@@ -1,0 +1,24 @@
+﻿@model AutenticacaoPorReconhecimento.Models.Usuario
+
+@{
+
+    ViewBag.Title = "Entrar";
+
+    // JSONresposta
+    string json = ViewData["JSONresposta"] as string;
+
+    //FaceId
+    string faceId = ViewData["FaceId"] as string;
+
+}
+
+<h2>Entrou :-)</h2>
+
+<p>Bem-vindo @Model.Nome</p>
+<p>@Model.Email</p>
+
+<img id="imagemConvertida" src="@Model.ImagemBase64" style="height: 200px; width: 250px;" />
+
+<p>@json</p>
+<p>@faceId</p>
+

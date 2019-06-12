@@ -1,0 +1,85 @@
+﻿@model AutenticacaoPorReconhecimento.Models.Usuario
+
+@{
+    ViewBag.Title = "Cadastro de face";
+}
+
+<h2>Login</h2>
+
+<form method="post" action="@Url.Action("Cadastrar", "Usuario")">
+
+    <div id="campoFoto"  style="display: flex;flex-direction: column;" >
+        <label>Olhe para a câmera enquanto faz o login:</label>
+        <video autoplay="true" id="webcam"  style="height: 200px; width: 250px;" ></video>
+        @Html.EditorFor(model => model.ImagemBase64, new { htmlAttributes = new { @hidden = "hidden", @id = "fotoBase64" } })
+        <canvas hidden="hidden" id="canvasFoto"></canvas>
+    </div>
+
+    <div id="campoSenha">
+        @Html.LabelFor(model => model.Senha)
+        @Html.EditorFor(model => model.Senha)
+        @Html.ValidationMessageFor(model => model.Senha, "")
+    </div>
+
+    <button onclick="tirarInstantaneo()" type="submit" name="cadastrar">Cadastrar</button>
+
+</form>
+
+<script>
+
+    function carregarCamera() {
+
+        //Captura elemento de vídeo
+        var video = document.querySelector("#webcam")
+
+        // Para IOS
+        video.setAttribute('autoplay', '');
+        video.setAttribute('muted', '');
+        video.setAttribute('playsinline', '');
+
+        // Verifica se o navegador pode capturar mídia
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: 'user' } })
+                .then(function (stream) {
+
+                    // Define o elemento vídeo para o que for capturado na webcam
+                    video.srcObject = stream;
+
+                })
+                .catch(function (error) {
+
+                    alert("Não é possível carregar a câmera. Tente outro navegador :-(");
+
+                });
+        }
+
+    }
+
+    function tirarInstantaneo() {
+
+        // Captura o elemento do vídeo
+        var video = document.querySelector("#webcam");
+
+        if (video != null) {
+            console.log("vídeo não é nulo");
+        }
+
+        // Cria um canvas que vai guardar a imagem instantânea
+        var canvas = document.querySelector("#canvasFoto");
+
+        var ctx = canvas.getContext('2d');
+
+        // Desenhando e convertendo as dimensões
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Criando JPG
+        var dataURI = canvas.toDataURL('image/jpeg');
+        document.querySelector("#fotoBase64").value = dataURI;
+
+        document.querySelector("#foto").src = dataURI;
+
+    }
+
+    carregarCamera();
+
+</script>
